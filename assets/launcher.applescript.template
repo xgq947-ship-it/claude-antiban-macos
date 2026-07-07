@@ -1,0 +1,10 @@
+-- Claude 隔离浏览器启动器模板
+-- 用法:把下面 4 个占位符替换成你的值,再编译成 .app 并重新签名(见 references/isolation.md)。
+--   __TZ__            例:America/New_York
+--   __ACCEPT_LANG__   例:en-US,en
+--   __USER_DATA_DIR__ 例:/Users/你的用户名/Library/Application Support/Google/Chrome-Claude
+--   __PROFILE_DIR__   例:Profile 1
+--
+-- 要点:直起 Chrome 二进制(不是 open),这样 TZ 环境变量才能传进去;--accept-lang 而非 --lang。
+
+do shell script "TZ='__TZ__' '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --user-data-dir='__USER_DATA_DIR__' --profile-directory='__PROFILE_DIR__' --accept-lang='__ACCEPT_LANG__' --no-first-run --no-default-browser-check --new-window 'https://claude.ai' >/dev/null 2>&1 &"
