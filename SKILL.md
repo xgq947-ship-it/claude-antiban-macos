@@ -2,14 +2,15 @@
 name: claude-antiban-macos
 description: >-
   macOS 上给 Claude(claude.ai 网页端 / Claude 桌面端)账号做「防封号」环境加固的一站式向导。
-  它会先把机器上和 Claude 有关的缓存/指纹/身份数据备份到桌面再彻底清理,然后按 8 点清单
+  它会先把机器上和 Claude 有关的缓存/指纹/身份数据备份到桌面再彻底清理(桌面端数据、浏览器站点数据、
+  隔离 profile、Keychain 凭据,并可按需卸载 Claude Code CLI 残留),然后按 8 点清单
   (干净住宅 IP、IP 稳定、强制 TCP 远离 UDP、浏览器禁 WebRTC、DNS 走代理、关 IPv6、
   时区/语言匹配出口 IP、指纹与环境隔离)逐项检测与加固,最后验证。
   只要用户提到「Claude 防封号 / 封号 / 账号被封 / 避免封控 / claude 环境隔离 / 指纹伪装 /
   时区语言不匹配 / WebRTC 泄漏 / 给 claude 配干净环境」等,即使没直说「skill」,也应使用本 skill。
   仅适用于 macOS,且仅用于加固使用者本人的账号环境。
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   platform: macOS
 ---
 
@@ -64,6 +65,12 @@ metadata:
    ```
 4. 告知用户备份位置。**默认不动 `~/.claude`(Claude Code 自己的配置/记忆)**;若用户坚持要清,
    参见 `references/00-cleanup.md` 的「谨慎项」,单独确认。
+5. 按需追加可选清理(每个都先预演、再确认):
+   - `--include-chrome-claude`:连隔离 Chrome-Claude profile 一起重置(全新指纹);
+   - `--include-browser-sites`:清各浏览器里 claude.ai / anthropic 的 cookie(逐个备份后删);
+   - `--include-cli`:卸载 Claude Code CLI 残留(npm 包 + URL Handler + NativeMessaging 清单)。
+   Safari、LocalStorage / Service Worker 深层清理、shell 配置自查等**手动项**,见
+   `references/browser-residue.md`。
 
 ### 阶段 1 — 检测(体检 8 点)
 
@@ -107,7 +114,8 @@ whoer.net / browserleaks 看时区语言、WebRTC 不泄漏、ipinfo.io 看 IP �
 
 | 文件 | 内容 |
 |------|------|
-| `references/00-cleanup.md` | 阶段 0 清理清单、谨慎项、Keychain |
+| `references/00-cleanup.md` | 阶段 0 清理清单、可选开关、Keychain |
+| `references/browser-residue.md` | 浏览器与设备残留清理(站点数据 / 隔离 profile / Safari / CLI / 设备标识) |
 | `references/proxy-network.md` | 网络层 1/2/3/5/6 检测与加固(Clash Verge) |
 | `references/webrtc.md` | 第 4 点 禁 WebRTC |
 | `references/ipv6-clash.md` | 第 6 点 关 IPv6(Clash Verge Script.js) |

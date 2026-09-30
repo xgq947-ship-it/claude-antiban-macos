@@ -2,7 +2,8 @@
 
 一个 **Claude Code / Claude 桌面端 Skill**:在 **macOS** 上给你**自己**的 Claude 账号做「防封号」环境加固。
 让浏览器指纹(时区 / 语言 / WebRTC / IPv6)与出口 IP(住宅)保持一致,并把 Claude 环境与日常浏览彻底隔离——
-起步前先把历史指纹数据备份到桌面再清干净。
+起步前先把历史指纹数据备份到桌面再清干净:清理范围覆盖**桌面端数据、浏览器站点数据、隔离 profile、
+Keychain 凭据,并可按需卸载 Claude Code CLI 残留**。
 
 > 面向不懂配置的人:装上后直接对 Claude 说「帮我做 Claude 防封号加固」,它会一步步带你检测、清理、加固、验证。
 
@@ -19,6 +20,10 @@
 
 流程:**阶段 0 备份并清理历史 Claude 数据 → 阶段 1 八点体检 → 阶段 2 逐项加固 → 阶段 3 验证**。
 每个会改动系统的动作都会先展示、让你确认再执行;删除前一律先备份到桌面 `claude-backup-<时间戳>/`。
+
+阶段 0 的清理覆盖:桌面端数据/缓存/设备 ID、浏览器里 claude.ai / anthropic 的 cookie 与站点数据、
+隔离浏览器 profile、Keychain 凭据;Claude Code CLI(npm 包、URL Handler、浏览器 NativeMessaging)
+可用 `--include-cli` 一并卸载。细节见 `references/browser-residue.md`。
 
 ## 适用范围
 
@@ -44,13 +49,13 @@ cp -r claude-antiban-macos ~/.claude/skills/claude-antiban-macos
 claude-antiban-macos/
 ├── SKILL.md                     # 主向导(Claude 读它来编排整个流程)
 ├── scripts/
-│   ├── 00_backup_and_clean.sh   # 阶段0:备份到桌面后清理(默认预演,--yes 才真删)
+│   ├── 00_backup_and_clean.sh   # 阶段0:备份后清理(预演默认,--yes 执行;--include-* 可选)
 │   ├── 01_audit.sh              # 阶段1:8点体检(只读)
 │   ├── harden_webrtc.sh         # 第4点:写 Chrome WebRTC 策略
 │   ├── verify.sh                # 阶段3:自动验证
 │   └── lib/common.sh
 ├── references/                  # 逐项加固详解(Claude 按需读取)
-│   ├── 00-cleanup.md  proxy-network.md  webrtc.md
+│   ├── 00-cleanup.md  browser-residue.md  proxy-network.md  webrtc.md
 │   ├── ipv6-clash.md  timezone-lang.md  isolation.md  verify-checklist.md
 └── assets/launcher.applescript.template   # 隔离浏览器启动器模板
 ```
@@ -59,6 +64,8 @@ claude-antiban-macos/
 
 - **有破坏性**:阶段 0 会删除本机 Claude 相关数据。脚本默认**预演**,只有 `--yes` 才真正执行,且删除前先整体备份到桌面。
 - 默认**不动 `~/.claude`**(Claude Code 自己的配置/记忆);要清需 `--include-claude-code` 显式开启并二次确认。
+- 浏览器站点数据、Claude Code CLI 残留分别在 `--include-browser-sites` / `--include-cli` 后清理;
+  Safari 等手动项见 `references/browser-residue.md`。
 - 每处系统改动都有备份与回退方式,见各 `references/*.md` 末尾。
 
 ## License
