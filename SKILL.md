@@ -10,7 +10,7 @@ description: >-
   时区语言不匹配 / WebRTC 泄漏 / 给 claude 配干净环境」等,即使没直说「skill」,也应使用本 skill。
   仅适用于 macOS,且仅用于加固使用者本人的账号环境。
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   platform: macOS
 ---
 

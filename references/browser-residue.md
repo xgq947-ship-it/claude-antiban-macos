@@ -49,6 +49,16 @@ Chrome → 设置 → 隐私和安全 → 第三方 Cookie → 查看所有网�
    origins: `https://claude.ai`、`https://claude.com`、`https://platform.claude.com`、
    `https://console.anthropic.com`、`https://anthropic.com` 及各自的 www 变体。
 4. 关闭 headless,把目录名改回 `Chrome`。
+5. ⚠️ **改名法安全守则(真实事故复盘,必读)**:
+   - 改名前与整个操作窗口内,确保**没有任何 Chrome 会被启动**(启动器.app、自动化脚本、
+     用户手动打开都不行)——`pgrep -x 'Google Chrome'` 必须为空。
+   - 每次 `mv A B` 前先断言目标不存在:`[ ! -e "$B" ] || 中止`。
+     **`mv A B` 当 B 已存在时是把 A「移进」B(变成 `B/A`),不报错、无提示**。改名一旦与
+     Chrome 自建默认目录的时序交错,整棵数据会被**静默嵌套**——表现为「Chrome 打开是全新
+     的、登录全没了」,而数据其实安然套在嵌套层里。
+   - 临时名用带时间戳的唯一名(如 `Chrome-cdp-<时间戳>`),别与任何残留同名目录相撞。
+   - 回滚前后验证**结构**而不只是名字:同级 `ls -d` + 进目录核对 `Default/Cookies` 字节数
+     (应等于原大小)。发现嵌套时,把原目录逐层 `mv` 提取复位——全程只动名字,数据零丢失。
 
 ## 2. Safari(系统保护,最稳的是手动)
 
